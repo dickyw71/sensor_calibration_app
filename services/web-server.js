@@ -2,6 +2,7 @@ const http = require('http');
 const express = require('express');
 const morgan = require('morgan');
 const webServerConfig = require('../config/web-server.js');
+const database = require('./database.js');
 
 let httpServer;
 
@@ -10,11 +11,17 @@ function initialize() {
     const app = express();
     httpServer = http.createServer(app);
 
-    app.get('/', (req, res) => {
-      // Combines logging info from request and response
-      app.use(morgan('combined'));
+    app.get('/', async (req, res) => {
+      const result = await database.simpleExecute(
+        `SELECT sensor_type_cd
+                , sensor_type_sdesc
+              FROM ref_sensor_type`
+	  );
 
-      res.end('Hello World!');
+      const sensor_type = result.rows[0].SENSOR_TYPE_CD;
+      const sensor_desc = result.rows[0].SENSOR_TYPE_SDESC;
+
+      res.end(`${sensor_type}  ${sensor_desc}`);
     });
 
     httpServer.listen(webServerConfig.port)
