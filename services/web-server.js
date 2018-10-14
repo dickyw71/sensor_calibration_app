@@ -2,7 +2,7 @@ const http = require('http');
 const express = require('express');
 const morgan = require('morgan');
 const webServerConfig = require('../config/web-server.js');
-const database = require('./database.js');
+const router = require('./router.js');
 
 let httpServer;
 
@@ -11,18 +11,11 @@ function initialize() {
     const app = express();
     httpServer = http.createServer(app);
 
-    app.get('/', async (req, res) => {
-      const result = await database.simpleExecute(
-        `SELECT sensor_type_cd
-                , sensor_type_sdesc
-              FROM ref_sensor_type`
-	  );
+    // Combines logging info from request and response
+    app.use(morgan('combined'));
 
-      const sensor_type = result.rows[0].SENSOR_TYPE_CD;
-      const sensor_desc = result.rows[0].SENSOR_TYPE_SDESC;
-
-      res.end(`${sensor_type}  ${sensor_desc}`);
-    });
+    // Mount the router at /api so all its routes start with /api
+    app.use('/api', router);
 
     httpServer.listen(webServerConfig.port)
       .on('listening', () => {
