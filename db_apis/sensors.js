@@ -1,3 +1,4 @@
+const oracledb = require('oracledb');
 const database = require('../services/database.js');
 
 const baseQuery =
@@ -23,10 +24,6 @@ async function find(context) {
     binds.sensor_id = context.id;
 
     query += `\nWHERE sensor_id = :sensor_id`;
-  } else if (context.barcode) {
-    bind.sensor_barcode = context.barcode;
-
-    query += `\nWHERE sensor_barcode = :sensor_barcode`;
   }
 
   const result = await database.simpleExecute(query, binds);
@@ -35,3 +32,61 @@ async function find(context) {
 }
 
 module.exports.find = find;
+
+const createSql = 
+ `insert into sensor (
+    sensor_part_id,
+    oem_serial_no,
+    bar_code,
+    project_cd,
+    nh_sensor_id,
+    cal_due_date
+  ) values (
+    :sensor_part_id,
+    :oem_serial_no,
+    :barcode,
+    :project_code,
+    :nh_sensor_id,
+    :cal_due_date
+  ) returning sensor_id
+  into :sensor_id`;
+
+async function create(_sensor) {
+  const sensor = Object.assign({}, _sensor);
+
+  sensor.sensor_id = {
+    dir: oracledb.BIND_OUT,
+    type: oracledb.NUMBER
+  }
+
+  const result = await database.simpleExecute(createSql, sensor);
+
+  sensor.sensor_id = result.outBinds.sensor_id[0];
+
+  return sensor;
+}
+
+module.exports.create = create;
+
+const updateSql =
+ `update sensor
+  set sensor_part_id = :sensor_part_id,
+    oem_serial_no = :oem_serial_no,
+    bar_code = :barcode,
+    project_cd = :project_code,
+    nh_sensor_id = :nh_sensor_id,
+    cal_due_date = :cal_due_date
+  where sensor_id = :sensor_id`;
+
+async function update(_sensor) {
+  const sensor = Object.assign({}, _sensor);
+  const result = await database.simpleExecute(updateSql, sensor);
+
+  if (result.rowsAffected && result.rowsAffected === 1) {
+    return sensor;
+  } else {
+    return null;
+  }
+}
+
+module.exports.update = update;

@@ -1,8 +1,11 @@
 const express = require('express');
 const router = new express.Router();
-const sensors = require('../controllers/sensos.js');
+const sensors = require('../controllers/sensors.js');
 
 router.route('/sensors/:id?')
-  .get(sensors.get);
+  .get(sensors.get)
+  .post(sensors.post)
+  .put(sensors.put)
+  .delete(sensors.delete);
 
 module.exports = router;
