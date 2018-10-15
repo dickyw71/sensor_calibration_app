@@ -5,6 +5,7 @@ async function get(req, res, next) {
     const context = {};
 
     context.id = parseInt(req.params.id, 10);
+    context.barcode = req.params.barcode;
 
     const rows = await sensors.find(context);
 
@@ -14,6 +15,12 @@ async function get(req, res, next) {
       } else {
         res.status(404).end();
       }
+    } else if (req.params.barcode) {
+        if (rows.length === 1 ) {
+          res.status(200).json(rows[0]);
+        } else {
+          res.status(404).end();
+        }
     } else {
       res.status(200).json(rows);
     }
