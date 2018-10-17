@@ -2,7 +2,8 @@ const oracledb = require('oracledb');
 const database = require('../services/database.js');
 
 const baseQuery =
- `SELECT s.bar_code as Barcode
+ `select s.bar_code as Barcode
+       , s.sensor_id
        , s.oem_serial_no
        , s.project_cd as Project
        , s.cal_due_date
@@ -12,9 +13,10 @@ const baseQuery =
        , spd.sensor_type_cd
        , s.obsolete_flag as In_use
        , spd.equip_desc
-    FROM sensor s
-    JOIN sensor_part_definition spd
-       ON(s.sensor_part_id = spd.sensor_part_id)`	
+    from sensor s
+    join sensor_part_definition spd
+      on (s.sensor_part_id = spd.sensor_part_id)	
+    where 1 = 1`;
 
 async function find(context) {
   let query = baseQuery;
@@ -23,7 +25,13 @@ async function find(context) {
   if (context.id) {
     binds.sensor_id = context.id;
 
-    query += `\nWHERE sensor_id = :sensor_id`;
+    query += `\nand sensor_id = :sensor_id`;
+  }
+
+  if (context.nh_sens_id && context.nh_sens_id !== NaN) {
+    binds.nh_sens_id = context.nh_sens_id;
+
+    query += '\nand nh_sensor_id = :nh_sens_id';
   }
 
   const result = await database.simpleExecute(query, binds);
