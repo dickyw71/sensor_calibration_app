@@ -26,12 +26,13 @@ async function find(context) {
     binds.sensor_id = context.id;
 
     query += `\nand sensor_id = :sensor_id`;
-  }
 
-  if (context.nh_sens_id && context.nh_sens_id !== NaN) {
+  } 
+ 
+  if (context.nh_sens_id || context.nh_sens_id === null) {
     binds.nh_sens_id = context.nh_sens_id;
-
-    query += '\nand nh_sensor_id = :nh_sens_id';
+    
+    query += '\nand ((nh_sensor_id is null and :nh_sens_id is null) or nh_sensor_id = :nh_sens_id)';
   }
 
   const result = await database.simpleExecute(query, binds);
