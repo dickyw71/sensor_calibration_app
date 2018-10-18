@@ -5,7 +5,12 @@ async function get(req, res, next) {
     const context = {};
 
     context.id = parseInt(req.params.id, 10);
-    context.nh_sens_id = parseInt(req.query.nh_sens_id, 10);
+
+    if (req.query.nh_sens_id === 'null') {
+      context.nh_sens_id = null;
+    } else {
+      context.nh_sens_id = parseInt(req.query.nh_sens_id, 10);
+    }
 
     const rows = await sensors.find(context);
 
