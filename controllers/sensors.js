@@ -12,6 +12,8 @@ async function get(req, res, next) {
       context.nh_sens_id = parseInt(req.query.nh_sens_id, 10);
     }
 
+    context.sort = req.query.sort;
+
     const rows = await sensors.find(context);
 
     if (req.params.id) {
