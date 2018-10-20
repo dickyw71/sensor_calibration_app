@@ -18,6 +18,8 @@ const baseQuery =
       on (s.sensor_part_id = spd.sensor_part_id)	
     where 1 = 1`;
 
+const sortableColumns = ['id', 'bar_code', 'cal_due_date', 'nh_sens_id', 'rev_date'];
+
 async function find(context) {
   let query = baseQuery;
   const binds = {};
@@ -35,6 +37,21 @@ async function find(context) {
     query += '\nand ((nh_sensor_id is null and :nh_sens_id is null) or nh_sensor_id = :nh_sens_id)';
   }
 
+  if (context.sort === undefined) { 
+    query += '\norder by bar_code asc';
+  } else {
+    let [column, order] = context.sort.split(':');
+
+    if (!sortableColumns.includes(column)) {
+      throw new Error('Invalid "sort" column');
+    }
+
+    if (order === undefined) {
+      order = 'asc';
+    }
+
+    query += `\norder by ${column} ${order}`;
+  }
   const result = await database.simpleExecute(query, binds);
 
   return result.rows;
