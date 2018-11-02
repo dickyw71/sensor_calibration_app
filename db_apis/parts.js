@@ -30,8 +30,8 @@ async function find(context) {
   let query = baseQuery;
   const binds = {};
 
-  if (context.code) {
-    binds.sensor_part_id = context.code;
+  if (context.id) {
+    binds.sensor_part_id = context.id;
  
     query += `\nwhere sensor_part_id = :sensor_part_id`;
   }
