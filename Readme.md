@@ -7,4 +7,4 @@
 - /api/types/:code/parts/:id?
 - /api/parts/:id/sensors/?nh_sens_id=null
 - /api/calibrations/:id?
-- /api/sensors/:id/calibrations/:id?
+- /api/sensors/:sensor_id/calibrations/:cal_id?
