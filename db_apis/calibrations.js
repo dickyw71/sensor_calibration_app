@@ -65,7 +65,7 @@ async function find(context) {
   if (context.id) {
     binds.sensor_cal_id = context.id;
  
-    query += `\nwhere sensor_cal_id = :sensor_cal_id`;
+    query += `\nand sensor_cal_id = :sensor_cal_id`;
   }
 
   const result = await database.simpleExecute(query, binds);
