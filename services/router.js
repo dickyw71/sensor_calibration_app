@@ -5,7 +5,8 @@ const types = require('../controllers/types.js');
 const parts = require('../controllers/parts.js');
 const calibrations = require('../controllers/calibrations.js');
 const types_sensors = require('../controllers/types_sensors.js');
-const type_parts = require('../controllers/types_parts.js');
+const types_parts = require('../controllers/types_parts.js');
+const sensors_calibrations = require('../controllers/sensors_calibrations.js');
 
 router.route('/sensors/:id?')
   .get(sensors.get)
@@ -26,5 +27,8 @@ router.route('/types/:code/sensors/:id?')
 
 router.route('/types/:code/parts/:id?')
   .get(types_parts.get);
+
+router.route('/sensors/:sensor_id/calibrations/:cal_id?')
+  .get(sensors_calibrations.get);
 
 module.exports = router;
