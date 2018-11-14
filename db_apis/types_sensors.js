@@ -41,12 +41,54 @@ async function find(context) {
     query += '\nand ((nh_sensor_id is null and :nh_sens_id is null) or nh_sensor_id = :nh_sens_id)';
   }
 
+  query += '\nand order by bar_code asc'
+
   const result = await database.simpleExecute(query, binds);
 
   return result.rows;
 }
 
 module.exports.find = find;
+
+
+const countQuery =
+ `select count(*) 
+    from sensor s 
+    join sensor_part_definition spd
+      on (s.sensor_part_id = spd.sensor_part_id)
+    where 1 = 1`;
+
+async function count(context) {
+  let query = countQuery;
+  const binds = {};
+
+  if (context.code) {
+    binds.code = context.code;
+
+    query += `\nand spd.sensor_type_cd = :code`;
+  }
+
+  if (context.id) {
+    binds.sensor_id = context.id;
+
+    query += `\nand sensor_id = :sensor_id`;
+
+  } 
+ 
+  if (context.nh_sens_id || context.nh_sens_id === null) {
+    binds.nh_sens_id = context.nh_sens_id;
+    
+    query += '\nand ((nh_sensor_id is null and :nh_sens_id is null) or nh_sensor_id = :nh_sens_id)';
+  }
+
+  const result = await database.simpleExecute(query, binds);
+
+  return result.rows;
+}
+
+
+module.exports.count = count;
+
 
 const createSql = 
  `insert into sensor (
