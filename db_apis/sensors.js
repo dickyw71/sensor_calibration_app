@@ -1,7 +1,21 @@
 const oracledb = require('oracledb');
 const database = require('../services/database.js');
 
-const baseQuery =
+const countQuery =
+ `select count(*) as "total" 
+    from sensor
+    where 1 = 1`;
+
+const basicQuery = 
+ `select s.bar_code as Barcode
+       , s.sensor_id
+       , spd.sensor_part_name
+    from sensor s
+    join sensor_part_definition spd
+      on (s.sensor_part_id = spd.sensor_part_id)
+    where 1 = 1`;
+
+const fullQuery =
  `select s.bar_code as Barcode
        , s.sensor_id
        , s.oem_serial_no
@@ -21,7 +35,16 @@ const baseQuery =
 const sortableColumns = ['sensor_id', 'bar_code', 'cal_due_date', 'nh_sensor_id', 'revision_dt'];
 
 async function find(context) {
-  let query = baseQuery;
+  let query = basicQuery;
+
+  if (context.view === 'count') {
+    query = countQuery;
+  } else if (context.view === 'basic') {
+    query = basicQuery
+  } else if (context.view === 'full') {
+    query = fullQuery;
+  } 
+
   const binds = {};
 
   if (context.id) {
