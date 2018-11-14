@@ -1,7 +1,23 @@
 const oracledb = require('oracledb');
 const database = require('../services/database.js');
 
-const baseQuery =
+const countQuery =
+ `select count(*) as "total"
+    from sensor s 
+    join sensor_part_definition spd
+      on (s.sensor_part_id = spd.sensor_part_id)
+    where 1 = 1`;
+
+const basicQuery =
+ `select s.bar_code as Barcode
+       , s.sensor_id
+       , spd.sensor_part_name
+    from sensor s 
+    join sensor_part_definition spd
+      on (s.sensor_part_id = spd.sensor_part_id)
+    where 1 = 1`;
+
+const fullQuery =
  `select s.bar_code as Barcode
        , s.sensor_id
        , s.oem_serial_no
@@ -19,7 +35,16 @@ const baseQuery =
     where 1 = 1`;
 
 async function find(context) {
-  let query = baseQuery;
+  let query = basicQuery;
+
+  if (context.view === 'count') {
+    query = countQuery;
+  } else if (context.view === 'basic') {
+    query = basicQuery;
+  } else if (context.view === 'full') {
+    query = fullQuery;
+  }
+
   const binds = {};
 
   if (context.code) {
@@ -31,17 +56,17 @@ async function find(context) {
   if (context.id) {
     binds.sensor_id = context.id;
 
-    query += `\nand sensor_id = :sensor_id`;
+    query += `\nand s.sensor_id = :sensor_id`;
 
   } 
  
   if (context.nh_sens_id || context.nh_sens_id === null) {
     binds.nh_sens_id = context.nh_sens_id;
     
-    query += '\nand ((nh_sensor_id is null and :nh_sens_id is null) or nh_sensor_id = :nh_sens_id)';
+    query += '\nand ((s.nh_sensor_id is null and :nh_sens_id is null) or s.nh_sensor_id = :nh_sens_id)';
   }
 
-  query += '\nand order by bar_code asc'
+  query += '\norder by bar_code asc';
 
   const result = await database.simpleExecute(query, binds);
 
@@ -49,46 +74,6 @@ async function find(context) {
 }
 
 module.exports.find = find;
-
-
-const countQuery =
- `select count(*) 
-    from sensor s 
-    join sensor_part_definition spd
-      on (s.sensor_part_id = spd.sensor_part_id)
-    where 1 = 1`;
-
-async function count(context) {
-  let query = countQuery;
-  const binds = {};
-
-  if (context.code) {
-    binds.code = context.code;
-
-    query += `\nand spd.sensor_type_cd = :code`;
-  }
-
-  if (context.id) {
-    binds.sensor_id = context.id;
-
-    query += `\nand sensor_id = :sensor_id`;
-
-  } 
- 
-  if (context.nh_sens_id || context.nh_sens_id === null) {
-    binds.nh_sens_id = context.nh_sens_id;
-    
-    query += '\nand ((nh_sensor_id is null and :nh_sens_id is null) or nh_sensor_id = :nh_sens_id)';
-  }
-
-  const result = await database.simpleExecute(query, binds);
-
-  return result.rows;
-}
-
-
-module.exports.count = count;
-
 
 const createSql = 
  `insert into sensor (
