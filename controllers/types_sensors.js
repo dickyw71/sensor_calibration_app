@@ -9,6 +9,9 @@ async function get(req, res, next) {
       context.nh_sens_id = null;
     } 
 
+    context.sort = req.query.sort;
+    context.view = req.query.view;
+
     const rows = await types_sensors.find(context);
 
     if (rows.length > 0) {
