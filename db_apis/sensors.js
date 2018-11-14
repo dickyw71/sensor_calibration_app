@@ -18,7 +18,7 @@ const baseQuery =
       on (s.sensor_part_id = spd.sensor_part_id)	
     where 1 = 1`;
 
-const sortableColumns = ['id', 'bar_code', 'cal_due_date', 'nh_sens_id', 'rev_date'];
+const sortableColumns = ['sensor_id', 'bar_code', 'cal_due_date', 'nh_sensor_id', 'revision_dt'];
 
 async function find(context) {
   let query = baseQuery;
