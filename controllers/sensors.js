@@ -13,6 +13,7 @@ async function get(req, res, next) {
     }
 
     context.sort = req.query.sort;
+    context.view = req.query.view;
 
     const rows = await sensors.find(context);
 
@@ -47,7 +48,7 @@ function getSensorFromRec(req) {
 
 async function post(req, res, next) {
   try {
-    let sesnor = getSensorFromRec(req);
+    let sensor = getSensorFromRec(req);
 
     sensor = await sensors.create(sensor);
 
