@@ -7,6 +7,9 @@ async function get(req, res, next) {
     context.code = req.params.code;
     context.id = parseInt(req.params.id, 10);
 
+    context.view = req.query.view;
+    context.sort = req.query.sort;
+
     const rows = await types_parts.find(context);
 
     if (req.params.id) {
