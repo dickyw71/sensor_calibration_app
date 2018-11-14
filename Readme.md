@@ -1,10 +1,36 @@
 # Sensor Calibration REST API 
 ## URL Endpoint
 - /api/sensors/:id?
+- /api/sensors/:id?view=basic
+- /api/sensors/:id?view=full
+- /api/sensors/:id?view=count
+- /api/sensors/:id?sort=bar_code:asc
 - /api/parts/:id?
+- /api/parts/:id?view=basic
+- /api/parts/:id?view=full
+- /api/parts/:id?view=count
+- /api/parts/:id?sort=sensor_part_name:asc
 - /api/types/:code?
+- /api/types/:code?view=basic
+- /api/types/:code?view=full
+- /api/types/:code?view=count
 - /api/types/:code/sensors/?nh_sens_id=null
+- /api/types/:code/sensors/?nh_sens_id=null&view=basic
+- /api/types/:code/sensors/?nh_sens_id=null&view=full
+- /api/types/:code/sensors/?nh_sens_id=null&view=count
 - /api/types/:code/parts/:id?
+- /api/types/:code/parts/:id?view=basic
+- /api/types/:code/parts/:id?view=full
+- /api/types/:code/parts/:id?view=count
 - /api/parts/:id/sensors/?nh_sens_id=null
+- /api/parts/:id/sensors/?nh_sens_id=null&view=basic
+- /api/parts/:id/sensors/?nh_sens_id=null&view=full
+- /api/parts/:id/sensors/?nh_sens_id=null&view=count
 - /api/calibrations/:id?
+- /api/calibrations/:id?view=basic
+- /api/calibrations/:id?view=full
+- /api/calibrations/:id?view=count
 - /api/sensors/:sensor_id/calibrations/:cal_id?
+- /api/sensors/:sensor_id/calibrations/:cal_id?view=basic
+- /api/sensors/:sensor_id/calibrations/:cal_id?view=full
+- /api/sensors/:sensor_id/calibrations/:cal_id?view=count
