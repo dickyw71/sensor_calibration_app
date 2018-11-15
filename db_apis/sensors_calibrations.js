@@ -1,6 +1,18 @@
 const database = require('../services/database.js');
 
-const basequery =
+const countQuery =
+ `select count(*) as "total"
+  from sensor_calibration
+  where 1 = 1`;
+
+const basicQuery =
+ `select sensor_cal_id "sensor_cal_id",
+    most_recent_cal_flag "most_recent_cal_flag",
+    cert_no "cert_no"		
+  from sensor_calibration
+  where 1 = 1`;
+
+const fullQuery =
  `select sensor_cal_id "sensor_cal_id",
     sensor_id "sensor_id",
     sensor_cal_notes "sensor_cal_notes",
@@ -59,7 +71,16 @@ const basequery =
   where 1 = 1`;
 
 async function find(context) {
-  let query = basequery;
+  let query = basicQuery;
+
+  if (context.view === 'count') {
+    query = countQuery;
+  } else if (context.view === 'basic') {
+    query = basicQuery;
+  } else if (context.view === 'full') {
+    query = fullQuery;
+  }
+
   const binds = {};
 
   if (context.sensor_id) {
@@ -73,6 +94,8 @@ async function find(context) {
 
     query += `\nand sensor_cal_id = :sensor_cal_id`;
   }
+
+  query += '\norder by sensor_cal_id desc';
 
   const result = await database.simpleExecute(query, binds);
 

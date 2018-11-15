@@ -5,6 +5,8 @@ async function get(req, res, next) {
     const context = {};
 
     context.id = parseInt(req.params.id, 10);
+    context.view = req.query.view;
+    context.sort = req.query.sort;
 
     const rows = await calibrations.find(context);
 

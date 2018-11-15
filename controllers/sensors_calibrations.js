@@ -7,6 +7,7 @@ async function get(req, res, next) {
     context.sensor_id = parseInt(req.params.sensor_id, 10);
     context.cal_id = parseInt(req.params.cal_id, 10);
     context.sort = req.query.sort;
+    context.view = req.query.view;   
 
     const rows = await sensors_calibrations.find(context);
 
