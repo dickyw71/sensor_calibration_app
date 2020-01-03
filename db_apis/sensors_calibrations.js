@@ -8,7 +8,9 @@ const countQuery =
 const basicQuery =
  `select sensor_cal_id "sensor_cal_id",
     most_recent_cal_flag "most_recent_cal_flag",
-    cert_no "cert_no"		
+    cert_no "cert_no",		
+    cal_date "cal_date",					
+    calibrated_by "calibrated_by"
   from sensor_calibration
   where 1 = 1`;
 
