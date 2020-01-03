@@ -12,7 +12,7 @@ const basicQuery =
   from sensor_calibration
   where 1 = 1`;
 
-const basequery =
+const fullQuery =
  `select sensor_cal_id "sensor_cal_id",
     sensor_id "sensor_id",
     sensor_cal_notes "sensor_cal_notes",
